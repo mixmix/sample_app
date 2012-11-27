@@ -10,6 +10,7 @@ group :development, :test do
   gem 'sqlite3', '1.3.5' #removed for exercise 3.5, (3)   
 
   gem 'rspec-rails', '2.11.0'
+  gem 'guard-rspec', '1.2.1'
 end
 
 
@@ -29,6 +30,8 @@ gem 'jquery-rails', '2.0.2'
 
 group :test do 
   gem 'capybara', '1.1.2'
+  gem 'rb-inotify', '0.8.8'
+  gem 'libnotify', '0.5.9'
 end
 
 group :production do     # removed for exercise 3.5
