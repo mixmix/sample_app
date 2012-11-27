@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.9'
-####gem 'pg', '0.12.2'  #added for exercise 3.5
+gem 'pg', '0.12.2'  #added for exercise 3.5
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 group :development, :test do 
 
-  gem 'sqlite3', '1.3.5' #removed for exercise 3.5, (3)   
+  #gem 'sqlite3', '1.3.5' #removed for exercise 3.5, (3)   
 
   gem 'rspec-rails', '2.11.0'
   gem 'guard-rspec', '1.2.1'
@@ -19,10 +19,8 @@ end
 group :assets do
   gem 'sass-rails',   '3.2.5'
   gem 'coffee-rails', '3.2.2'
-
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
-
   gem 'uglifier', '1.2.3'
 end
 
