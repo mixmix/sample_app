@@ -10,6 +10,8 @@ group :development, :test do
   gem 'pg', '0.12.2'  #added for exercise 3.5
   gem 'rspec-rails', '2.11.0'
   #gem 'guard-rspec', '1.2.1'
+  #gem 'guard-spork', '1.2.0'
+  gem 'spork', '0.9.2'
 end
 
 
