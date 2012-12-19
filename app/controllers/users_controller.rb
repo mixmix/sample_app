@@ -5,7 +5,11 @@ class UsersController < ApplicationController
   before_filter :admin_user,     only: :destroy          #? does this in combination with first before_filter ensure signed in && admin?
 
   def new
-    @user = User.new
+    unless signed_in? 
+      @user = User.new
+    else
+      redirect_to root_url #? root_path and root_url are the same?
+    end
   end
 
   def show
@@ -13,13 +17,17 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params[:user])
-    if @user.save
-      sign_in @user
-      flash[:success] = "Welcome to the Sample App!"     
-      redirect_to @user # Handle a successful save.
-    else
-      render 'new'
+    unless signed_in?
+      @user = User.new(params[:user])
+      if @user.save
+        sign_in @user
+        flash[:success] = "Welcome to the Sample App!"     
+        redirect_to @user # Handle a successful save.
+      else
+        render 'new'  #? does this shunt to action 'new' or new.html.erb ?
+      end
+    else 
+      redirect_to root_url 
     end
   end
 
@@ -45,9 +53,15 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    User.find(params[:id]).destroy #? so when we go :   link_to "delete", user, method: :delete it goes and pulls this users params?
-    flash[:success] = "User destroyed."
-    redirect_to users_url
+    user = User.find(params[:id])
+    if user.can_be_deleted_by?(current_user)   #defined this user method in user model (outside private) 
+      user.destroy            #? so when we go :   link_to "delete", user, method: :delete it goes and pulls this users params?
+      flash[:success] = "User destroyed."
+      redirect_to users_url
+    else
+      flash[:error] = "You cannot delete yourself!"
+      redirect_to users_url
+    end
   end
 
   private
@@ -67,4 +81,6 @@ class UsersController < ApplicationController
     def admin_user 
       redirect_to(root_path) unless current_user.admin?
     end
+
+
 end

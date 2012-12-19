@@ -9,6 +9,9 @@ describe "AuthenticationPages" do
     it { should have_selector('h1',    text: 'Sign in') }
     it { should have_selector('title', text: 'Sign in') }
     
+    it { should_not have_link('Settings') } #this is replicated before signin, after signout
+    it { should_not have_link('Accounts') } 
+    
     describe "with invalid information" do
       before { click_button "Sign in" }
       
@@ -42,6 +45,9 @@ describe "AuthenticationPages" do
       describe "followed by signout" do
         before { click_link "Sign out" }
         it { should have_link('Sign in') }
+        
+        it { should_not have_link('Settings') }
+        it { should_not have_link('Accounts') }
       end
     end #valid information
     
@@ -74,6 +80,13 @@ describe "AuthenticationPages" do
         describe "after signing in" do
           it "should render the desired protected page" do
             page.should have_selector('title', text: 'Edit user')
+          end 
+          describe "then signing out and signing in again" do 
+            before do
+              click_link "Sign out"
+              sign_in user
+            end
+            it { should have_selector('title', text: user.name) }
           end
         end
       end

@@ -1,5 +1,5 @@
 SampleApp::Application.routes.draw do
-  resources :users    # get "users/new"   #made redundant by resources :users above
+  resources :users   # get "users/new"   #made redundant by resources :users above
   resources :sessions, only: [:new, :create, :destroy]
 
   match '/signup',  to: 'users#new'

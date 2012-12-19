@@ -8,6 +8,8 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  password_digest :string(255)
+#  remember_token  :string(255)
+#  admin           :boolean          default(FALSE)
 #
 
 describe User do
@@ -136,6 +138,15 @@ describe User do
   describe "remember token" do
     before { @user.save }
     its(:remember_token) { should_not be_blank }
+  end
+
+  describe "accessible attributes" do
+    it "should not allow access to admin " do
+      expect do
+        User.new(name: "test admin User", email: "fake_admin@example.com",
+                      password: "foobar", password_confirmation: "foobar", admin: true)
+      end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
+    end    
   end
 
 end

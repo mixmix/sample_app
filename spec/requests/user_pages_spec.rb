@@ -44,6 +44,7 @@ describe "User pages" do
           expect { click_link('delete') }.to change(User, :count).by(-1)
         end
         it { should_not have_link('delete', href: user_path(admin)) }
+        
       end
     end
     
@@ -53,7 +54,7 @@ describe "User pages" do
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }    # Code to make a user variable
     before { visit user_path(user) }
-  
+     
     it { should have_selector('h1',    text: user.name) }
     it { should have_selector('title', text: user.name) }
   end
@@ -61,15 +62,15 @@ describe "User pages" do
   describe "signup page" do
     before { visit signup_path }
     let(:submit) { "Create my account" }
-
+    
     it { should have_selector('h1',    text: 'Sign up') }
     it { should have_selector('title', text: full_title('Sign up')) }
-
+    
     describe "with invalid information" do
       it "should not create a user" do
         expect { click_button submit }.not_to change(User, :count)
       end
-
+      
       describe "after submission" do
         before { click_button submit }
         
@@ -78,7 +79,7 @@ describe "User pages" do
         it { should have_content('error') }
       end
     end
-
+    
     describe "with valid information" do
       before do
         fill_in "Name",         with: "Example User"
@@ -89,11 +90,11 @@ describe "User pages" do
       it "should create a user" do
         expect { click_button submit }.to change(User, :count).by(1)
       end
-
+      
       describe "after saving user" do 
         let(:user){ User.find_by_email('user@example.com') }
         before { click_button submit }
-
+        
         it { should have_selector('title', text: user.name) }
         it { should have_selector('h1', text: user.name) } 
         it { should have_selector('div.alert.alert-success', text: 'Welcome') }
@@ -109,18 +110,18 @@ describe "User pages" do
       sign_in user 
       visit edit_user_path(user)
     end
-
+    
     describe "page" do
       it { should have_selector('h1',    text: "Update your profile") }
       it { should have_selector('title', text: "Edit user") }
       it { should have_link('change', href: 'http://gravatar.com/emails') }
     end
-
+    
     describe "with invalid info" do 
       before { click_button "Save changes" }
       it { should have_content('error')}
     end
-
+    
     describe "with valid information" do
       let(:new_name)  { "New Name" }
       let(:new_email) { "new@example.com" }
@@ -131,14 +132,14 @@ describe "User pages" do
         fill_in "Confirm Password", with: user.password
         click_button "Save changes"
       end
-
+      
       it { should have_selector('title', text: new_name) }
       it { should have_selector('div.alert.alert-success') }
       it { should have_link('Sign out', href: signout_path) }
       specify { user.reload.name.should  == new_name }
       specify { user.reload.email.should == new_email }
     end
-
+    
   end  #end update page
 
 

@@ -8,10 +8,12 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  password_digest :string(255)
+#  remember_token  :string(255)
+#  admin           :boolean          default(FALSE)
 #
 
 class User < ActiveRecord::Base
-  attr_accessible :email, :name, :password, :password_confirmation #note :admin excluded so can't be mass-assigned
+  attr_accessible :email, :name, :password, :password_confirmation#, :admin#note :admin excluded so can't be mass-assigned
   has_secure_password
 # before_save { |user| user.email = email.downcase }
   before_save { self.email.downcase! }
@@ -27,11 +29,15 @@ class User < ActiveRecord::Base
   validates :password, length: { minimum: 6 } # ,presence: true #removed because password_digest and password missing are same?
   validates :password_confirmation, presence: true
 
-  private
 
+    def can_be_deleted_by?(guy_trying)
+      (self != guy_trying) && guy_trying.admin
+    end
+
+  private
+    
     def create_remember_token
       self.remember_token = SecureRandom.urlsafe_base64
     end
-
-
+    
 end
