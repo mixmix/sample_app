@@ -15,6 +15,7 @@
 class User < ActiveRecord::Base
   attr_accessible :email, :name, :password, :password_confirmation#, :admin#note :admin excluded so can't be mass-assigned
   has_secure_password
+  has_many :microposts, dependent: :destroy
 # before_save { |user| user.email = email.downcase }
   before_save { self.email.downcase! }
   before_save :create_remember_token
@@ -28,6 +29,13 @@ class User < ActiveRecord::Base
 
   validates :password, length: { minimum: 6 } # ,presence: true #removed because password_digest and password missing are same?
   validates :password_confirmation, presence: true
+
+
+  def feed               #? why does this go in the model? how is this used when chained like current_user.feed ? 
+    #? why would   microposts work insread of Micropost.where(..) ?  why isn't it self.microposts ? 
+    # This is preliminary. See "Following users" for the full implementation.
+    Micropost.where("user_id = ?", id)   #the '?'  ensure the id is properly 'escaped', protects againsts SQL injection
+  end
 
 
     def can_be_deleted_by?(guy_trying)
