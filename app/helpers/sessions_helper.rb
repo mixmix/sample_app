@@ -10,10 +10,16 @@ module SessionsHelper
     cookies.delete(:remember_token)
   end
 
-
   def signed_in?
     !current_user.nil?   #presume the ! is a 'not' here
   end
+
+  def signed_in_user      #this was moved from the users controller (private) so microposts can access
+    unless signed_in?
+      store_location
+      redirect_to signin_url, notice: "Please sign in."   #? signin_url not sign_in path? why
+    end
+  end     #note:   , notice:  is shorthand options hash for redirect_to method. otherwise - flash[:notice]=
 
   def current_user=(user)   #the = immendiately after method name includes it i nmethod name and makes it an assign function
     @current_user = user     #? this code i find a bit fuzy
