@@ -13,8 +13,12 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
-    @microposts = @user.microposts.paginate(page: params[:page])
+    if current_user.id == params[:id]   #? is this insecure?
+      redirect_to root_url
+    else
+      @user = User.find(params[:id])
+      @microposts = @user.microposts.paginate(page: params[:page]) #then implicit render show.html.erb
+    end
   end
 
   def create

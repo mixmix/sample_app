@@ -3,7 +3,7 @@
   <aside class="span4">
     <section>
       <h1>
-        <%= gravatar_for(@user, options = {size: 40} ) %> 
+        <%= gravatar_for(@user, options = {size: 40} ) %>
         <%= @user.name %>
       </h1>
     </section>
@@ -12,7 +12,7 @@
     <% if @user.microposts.any? %>
       <h3>Microposts (<%= @user.microposts.count %>)</h3>
       <ol class="microposts">
-        <%= render @microposts %> <!-- renders all microposts in in microposts/_microposts.html.erb -->  
+        <%= render @microposts %> <!-- renders all microposts in in microposts/_microposts.html.erb -->
       </ol>
       <%= will_paginate @microposts %>
     <% end %>

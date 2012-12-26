@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
     def create
       user = User.find_by_email( params[:session][:email].downcase )
       if user && user.authenticate(params[:session][:password])
-        #sign the usier in and redirect to the user's show page.
+        #sign the user in and redirect to the user's show page.
         sign_in user
         redirect_back_or user  #modified redirect described in sesssions_helper
       else 
@@ -18,8 +18,7 @@ class SessionsController < ApplicationController
     
     def destroy
       sign_out
-      redirect_to root_url   #? how come this is root_url and not root_path
-
+      redirect_to root_url  
     end
 
 end

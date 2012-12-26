@@ -1,7 +1,7 @@
 class MicropostsController < ApplicationController
   before_filter :signed_in_user, only: [:create, :destroy]
   before_filter :correct_user,   only: :destroy
-  
+
   def create
     @micropost = current_user.microposts.build(params[:micropost])
     if @micropost.save
@@ -11,7 +11,7 @@ class MicropostsController < ApplicationController
       @feed_items = []   #if micropost creation fails, passes empty instance variable, #? need as home action not called?
       render 'static_pages/home'
     end
-  end 
+  end
 
   def destroy
     @micropost.destroy
