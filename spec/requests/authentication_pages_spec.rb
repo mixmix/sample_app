@@ -10,7 +10,7 @@ describe "AuthenticationPages" do
     it { should have_selector('title', text: 'Sign in') }
     
     it { should_not have_link('Settings') } #this is replicated before signin, after signout
-    it { should_not have_link('Accounts') } 
+    it { should_not have_link('Accounts') }
     
     describe "with invalid information" do
       before { click_button "Sign in" }
@@ -19,7 +19,7 @@ describe "AuthenticationPages" do
       it { should have_error_message('Invalid') }
       #it { should have_selector('div.alert.alert-error', text: 'Invalid') }
       
-      describe "after visiting another page" do 
+      describe "after visiting another page" do
         before { click_link "Home" }
         it { should_not have_selector('div.alert.alert-error') }
       end
@@ -35,7 +35,8 @@ describe "AuthenticationPages" do
      ##   click_button "Sign in"
      ## end
       
-      it { should have_selector('title', text: user.name) }
+      it { should have_selector('h1', text: user.name) }
+      #it { should have_selector('title', text: user.name) } #redundant as no longer go to users/:id after login
       it { should have_link('Users',    href: users_path) }
       it { should have_link('Profile', href: user_path(user)) }
       it { should have_link('Settings', href: edit_user_path(user)) }
@@ -63,9 +64,10 @@ describe "AuthenticationPages" do
       
       describe "submitting a DELETE request to the Users#destroy action" do
         before { delete user_path(user) }
-        specify { response.should redirect_to(root_path) }        
+        specify { response.should redirect_to(root_path) }
       end
     end
+    
     describe "for non-signed-in-users" do 
       let(:user) { FactoryGirl.create(:user) }
       
@@ -86,7 +88,8 @@ describe "AuthenticationPages" do
               click_link "Sign out"
               sign_in user
             end
-            it { should have_selector('title', text: user.name) }
+            it { should have_selector('h1', text: user.name) }
+            #it { should have_selector('title', text: user.name) }  #see :38
           end
         end
       end
@@ -118,9 +121,30 @@ describe "AuthenticationPages" do
           before { visit users_path }
           it { should have_selector('title', text: 'Sign in') }
         end
-      
+        
+        describe "visiting the following page" do
+          before { visit following_user_path(user) }
+          it { should have_selector('title', text: 'Sign in') }
+        end
+        
+        describe "visiting the followers page" do
+          before { visit followers_user_path(user) }
+          it { should have_selector('title', text: 'Sign in') }
+        end
       end #in users controller
-    end #for signed-in-users
+      
+      describe "in the Relationships controller" do
+        describe "submitting to the create action" do
+          before { post relationships_path }
+          specify { response.should redirect_to(signin_path) }
+        end
+        
+        describe "submitting to the destroy action" do
+          before { delete relationship_path(1) }
+          specify { response.should redirect_to(signin_path) }
+        end
+      end #in relationship controller
+    end #for non-signed-in-users
     
     describe "as wrong user" do
       let(:user) { FactoryGirl.create(:user) }

@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
-  before_filter :signed_in_user, only: [:index, :edit, :update, :destroy] 
+  before_filter :signed_in_user, only: [:index, :edit, :update, :destroy, :following, :followers]
     #arranges for specified methods to be called before specific actions
   before_filter :correct_user,   only: [:edit, :update]  #? why is a method here called by a 'symboled' version?
   before_filter :admin_user,     only: :destroy          #? does this in combination with first before_filter ensure signed in && admin?
 
   def new
-    unless signed_in? 
+    unless signed_in?
       @user = User.new
     else
       redirect_to root_url #? root_path and root_url are the same?
@@ -13,8 +13,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    if current_user.id == params[:id]   #? is this insecure?
-      redirect_to root_url
+    if false #current_user.id == params[:id]   #? is this insecure?
+      redirect_to root_url  #this was designed so that the user initially lands on their home page with ability to post.
     else
       @user = User.find(params[:id])
       @microposts = @user.microposts.paginate(page: params[:page]) #then implicit render show.html.erb
@@ -26,13 +26,13 @@ class UsersController < ApplicationController
       @user = User.new(params[:user])
       if @user.save
         sign_in @user
-        flash[:success] = "Welcome to the Sample App!"     
+        flash[:success] = "Welcome to the Sample App!"
         redirect_to @user # Handle a successful save.
       else
         render 'new'  #? does this shunt to action 'new' or new.html.erb ?
       end
-    else 
-      redirect_to root_url 
+    else
+      redirect_to root_url
     end
   end
 
@@ -69,6 +69,20 @@ class UsersController < ApplicationController
     end
   end
 
+  def following
+    @title = "Following"
+    @user = User.find(params[:id])
+    @users = @user.followed_users.paginate(page: params[:page])
+    render 'show_follow'
+  end
+
+  def followers
+    @title = "Followers"
+    @user = User.find(params[:id])
+    @users = @user.followers.paginate(page: params[:page])
+    render 'show_follow'
+  end
+
   private
    
     def correct_user
@@ -76,7 +90,7 @@ class UsersController < ApplicationController
       redirect_to(root_path) unless current_user?(@user)
     end
    
-    def admin_user 
+    def admin_user
       redirect_to(root_path) unless current_user.admin?
     end
 
